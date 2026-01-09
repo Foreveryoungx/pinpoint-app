@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { NotebookPen, LayoutGrid, Plus } from "lucide-react";
 import { BallPerformanceList } from "@/components/BallPerformanceList";
 import { DashboardAlerts } from "@/components/DashboardAlerts";
+import { ScoreHistoryChart } from "@/components/ScoreHistoryChart";
 import { useApp } from "@/components/AppProvider";
 
 export default function Home() {
@@ -21,6 +22,14 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Alerts */}
+      <DashboardAlerts />
+
+      {/* Trend Chart */}
+      <section>
+        <ScoreHistoryChart />
+      </section>
+
       {/* Quick Actions */}
       <div className="grid grid-cols-2 gap-4">
         <Link href="/log" className="block">
@@ -35,9 +44,6 @@ export default function Home() {
           </Button>
         </Link>
       </div>
-
-      {/* Alerts */}
-      <DashboardAlerts />
 
       {/* Performance Stats */}
       <section>
