@@ -22,6 +22,7 @@ export interface GameLog {
         boardTarget: number;
     };
     notes?: string;
+    gamesCount?: number;
 }
 
 export interface AppState {

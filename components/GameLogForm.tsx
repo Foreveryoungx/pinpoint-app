@@ -6,11 +6,13 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Save } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 export function GameLogForm() {
     const { arsenal, logGame } = useApp();
     const router = useRouter();
 
+    const [gamesCount, setGamesCount] = useState(1);
     const [formData, setFormData] = useState({
         ballId: "",
         score: "",
@@ -31,7 +33,7 @@ export function GameLogForm() {
                 boardTarget: parseInt(formData.boardTarget)
             } : undefined,
             notes: formData.notes
-        });
+        }, gamesCount);
 
         router.push('/arsenal');
     };
@@ -56,10 +58,12 @@ export function GameLogForm() {
                         <div
                             key={ball.id}
                             onClick={() => setFormData({ ...formData, ballId: ball.id })}
-                            className={`p-3 rounded-lg border cursor-pointer transition-all ${formData.ballId === ball.id
+                            className={cn(
+                                "p-3 rounded-lg border cursor-pointer transition-all",
+                                formData.ballId === ball.id
                                     ? "bg-primary/20 border-primary text-primary"
                                     : "bg-secondary border-white/5 text-gray-400 hover:bg-white/5"
-                                }`}
+                            )}
                         >
                             <div className="font-medium">{ball.name}</div>
                             <div className="text-xs opacity-70">{ball.brand}</div>
@@ -76,6 +80,27 @@ export function GameLogForm() {
                 value={formData.score}
                 onChange={e => setFormData({ ...formData, score: e.target.value })}
             />
+
+            <div className="bg-secondary/30 p-4 rounded-xl border border-white/5 space-y-2">
+                <div className="flex justify-between items-center mb-1">
+                    <label className="text-sm font-medium text-gray-400">Games Played</label>
+                    <span className="text-xl font-bold text-primary">{gamesCount}</span>
+                </div>
+                <input
+                    type="range"
+                    min="1"
+                    max="10"
+                    value={gamesCount}
+                    onChange={(e) => setGamesCount(parseInt(e.target.value))}
+                    className="w-full accent-primary h-2 bg-white/10 rounded-lg appearance-none cursor-pointer"
+                />
+                <div className="relative w-full h-4">
+                    <span className="absolute left-0 text-xs text-gray-500 transform -translate-x-0">1</span>
+                    <span className="absolute left-[22%] text-xs text-gray-500 transform -translate-x-1/2">3 (Series)</span>
+                    <span className="absolute left-[55%] text-xs text-gray-500 transform -translate-x-1/2">6</span>
+                    <span className="absolute right-0 text-xs text-gray-500 transform translate-x-0">10</span>
+                </div>
+            </div>
 
             <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-400">The Line (Optional)</label>

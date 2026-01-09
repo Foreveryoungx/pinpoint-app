@@ -8,6 +8,7 @@ import { CirclePlus, X, Camera, Save, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Ball } from "@/lib/types";
 import { compressImage } from "@/lib/image-compression";
+import { POPULAR_BALLS, BallData } from "@/lib/ball-data";
 
 interface AddBallFormProps {
     onClose?: () => void;
@@ -82,8 +83,36 @@ export function AddBallForm({ onClose, initialData }: AddBallFormProps) {
         }
     }
 
+
+    // Autocomplete Logic
+    const [suggestions, setSuggestions] = useState<BallData[]>([]);
+
+    const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const val = e.target.value;
+        setFormData({ ...formData, name: val });
+
+        if (val.length > 1) {
+            const matches = POPULAR_BALLS.filter(b =>
+                b.name.toLowerCase().includes(val.toLowerCase())
+            ).slice(0, 5);
+            setSuggestions(matches);
+        } else {
+            setSuggestions([]);
+        }
+    };
+
+    const selectSuggestion = (ball: BallData) => {
+        setFormData(prev => ({
+            ...prev,
+            name: ball.name,
+            brand: ball.brand,
+            coverstock: ball.coverstock
+        }));
+        setSuggestions([]);
+    };
+
     return (
-        <form onSubmit={handleSubmit} className="space-y-4 p-6 bg-secondary/50 rounded-2xl border border-white/5 backdrop-blur-sm">
+        <form onSubmit={handleSubmit} className="space-y-4 p-6 bg-secondary/50 rounded-2xl border border-white/5 backdrop-blur-sm relative">
             <div className="flex justify-between items-center mb-2">
                 <h3 className="text-lg font-semibold text-primary">
                     {initialData ? "Edit Ball" : "Add New Ball"}
@@ -121,13 +150,30 @@ export function AddBallForm({ onClose, initialData }: AddBallFormProps) {
                     </div>
                 </div>
 
-                <Input
-                    required
-                    label="Ball Name"
-                    placeholder="e.g. Phaze II"
-                    value={formData.name}
-                    onChange={e => setFormData({ ...formData, name: e.target.value })}
-                />
+                <div className="relative">
+                    <Input
+                        required
+                        label="Ball Name"
+                        placeholder="e.g. Phaze II"
+                        value={formData.name}
+                        onChange={handleNameChange}
+                        onBlur={() => setTimeout(() => setSuggestions([]), 200)} // Delay hiding so click registers
+                    />
+                    {suggestions.length > 0 && (
+                        <div className="absolute top-full left-0 right-0 bg-secondary border border-white/10 rounded-xl mt-1 z-50 shadow-xl overflow-hidden">
+                            {suggestions.map((s) => (
+                                <div
+                                    key={s.name}
+                                    onClick={() => selectSuggestion(s)}
+                                    className="p-3 hover:bg-primary/20 cursor-pointer flex justify-between items-center group transition-colors"
+                                >
+                                    <span className="text-white font-medium">{s.name}</span>
+                                    <span className="text-xs text-gray-400 group-hover:text-primary">{s.brand}</span>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
 
                 <div className="grid grid-cols-2 gap-4">
                     <Input

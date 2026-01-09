@@ -24,7 +24,7 @@ export function calculateBallStats(arsenal: Ball[], logs: GameLog[]): BallStats[
         const current = statsMap.get(log.ballId);
         if (current) {
             current.totalPins += log.score;
-            current.games += 1;
+            current.games += (log.gamesCount || 1);
             if (log.score > current.high) {
                 current.high = log.score;
             }

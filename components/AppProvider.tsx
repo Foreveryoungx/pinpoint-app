@@ -7,7 +7,7 @@ interface AppContextType extends AppState {
     addBall: (ball: Omit<Ball, 'id' | 'gamesTotal' | 'gamesSinceSurface' | 'gamesSinceDetox'>) => void;
     updateBall: (id: string, updates: Partial<Ball>) => void;
     deleteBall: (id: string) => void;
-    logGame: (log: Omit<GameLog, 'id' | 'date'>) => void;
+    logGame: (log: Omit<GameLog, 'id' | 'date'>, gamesCount?: number) => void;
     resetMaintenance: (ballId: string, type: 'surface' | 'detox') => void;
 }
 
@@ -69,11 +69,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         }));
     };
 
-    const logGame = (logData: Omit<GameLog, 'id' | 'date'>) => {
+    const logGame = (logData: Omit<GameLog, 'id' | 'date'>, gamesCount: number = 1) => {
         const newLog: GameLog = {
             ...logData,
             id: crypto.randomUUID(),
             date: new Date().toISOString(),
+            gamesCount: gamesCount
         };
 
         setState(prev => {
@@ -82,9 +83,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
                 if (b.id === logData.ballId) {
                     return {
                         ...b,
-                        gamesTotal: b.gamesTotal + 1,
-                        gamesSinceSurface: b.gamesSinceSurface + 1,
-                        gamesSinceDetox: b.gamesSinceDetox + 1
+                        gamesTotal: b.gamesTotal + gamesCount,
+                        gamesSinceSurface: b.gamesSinceSurface + gamesCount,
+                        gamesSinceDetox: b.gamesSinceDetox + gamesCount
                     };
                 }
                 return b;
