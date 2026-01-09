@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/Input";
 import { CirclePlus, X, Camera, Save, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Ball } from "@/lib/types";
+import { compressImage } from "@/lib/image-compression";
 
 interface AddBallFormProps {
     onClose?: () => void;
@@ -36,14 +37,16 @@ export function AddBallForm({ onClose, initialData }: AddBallFormProps) {
         }
     }, [initialData]);
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setFormData(prev => ({ ...prev, image: reader.result as string }));
-            };
-            reader.readAsDataURL(file);
+            try {
+                const compressedImage = await compressImage(file);
+                setFormData(prev => ({ ...prev, image: compressedImage }));
+            } catch (error) {
+                console.error("Image compression failed", error);
+                alert("Failed to process image. Please try another.");
+            }
         }
     };
 
