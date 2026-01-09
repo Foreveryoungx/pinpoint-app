@@ -1,23 +1,48 @@
+"use client";
+
 import Link from "next/link";
+import { Button } from "@/components/ui/Button";
+import { NotebookPen, LayoutGrid, Plus } from "lucide-react";
+import { BallPerformanceList } from "@/components/BallPerformanceList";
+import { DashboardAlerts } from "@/components/DashboardAlerts";
+import { useApp } from "@/components/AppProvider";
 
 export default function Home() {
+  const { arsenal } = useApp();
+  const hasBalls = arsenal.length > 0;
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-8 bg-background text-foreground">
-      <div className="text-center space-y-4">
-        <h1 className="text-5xl font-bold tracking-tighter text-primary drop-shadow-[0_0_15px_rgba(0,255,157,0.5)]">
-          PinPoint
-        </h1>
-        <p className="text-xl text-gray-400 tracking-wide">
-          Arsenal & Oil Manager
-        </p>
-        <div className="pt-8">
-          <Link href="/arsenal">
-            <button className="px-6 py-3 bg-secondary border border-primary/30 text-primary rounded-xl hover:bg-primary hover:text-black transition-all duration-300 font-medium">
-              Enter Arsenal
-            </button>
-          </Link>
+    <main className="min-h-screen p-4 pb-20 md:p-8 max-w-xl mx-auto space-y-8">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">PinPoint</h1>
+          <p className="text-xs text-primary tracking-widest font-mono">DASHBOARD</p>
         </div>
       </div>
+
+      {/* Quick Actions */}
+      <div className="grid grid-cols-2 gap-4">
+        <Link href="/log" className="block">
+          <Button className="w-full h-14 text-lg bg-primary text-black hover:bg-primary/90 font-bold shadow-[0_0_20px_rgba(0,255,157,0.2)]">
+            <NotebookPen className="mr-2 h-5 w-5" /> Log Game
+          </Button>
+        </Link>
+        <Link href="/arsenal" className="block">
+          <Button variant="secondary" className="w-full h-14 text-lg border border-white/10">
+            {hasBalls ? <LayoutGrid className="mr-2 h-5 w-5" /> : <Plus className="mr-2 h-5 w-5" />}
+            {hasBalls ? "My Arsenal" : "Add Ball"}
+          </Button>
+        </Link>
+      </div>
+
+      {/* Alerts */}
+      <DashboardAlerts />
+
+      {/* Performance Stats */}
+      <section>
+        <BallPerformanceList />
+      </section>
     </main>
   );
 }
