@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PinPoint: Arsenal & Oil Manager 🎳
 
-## Getting Started
+**PinPoint** is a specialized tracking application designed for serious bowlers to manage their arsenal, track equipment mileage, and maintain peak performance.
 
-First, run the development server:
+![PinPoint Preview](./preview.png)
+*(Note: Add a screenshot of the dashboard here if available)*
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🎯 The Purpose
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Bowlers carry sets of expensive equipment that degrade over time. Oil absorption changes the reaction of a bowling ball. PinPoint solves the guesswork of maintenance by tracking the exact "mileage" (games played) on each ball.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Key Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+*   **Arsenal Management**: Add, edit, and manage your entire bag. Track specific details like Brand, Coverstock, and serial notes.
+*   **Maintenance Alerts**:
+    *   **Surface Alert (30 Games)**: Reminds you to sand/polish your equipment.
+    *   **Detox Alert (60 Games)**: Critical warning to extract oil to restore hook potential.
+*   **Game Logging**: Log scores and assign them to specific balls to automatically increment mileage.
+*   **Strategy Tracking**: Save your "Line" (Board Stand / Arrow Target) for future reference.
+*   **Mobile-First Design**: Optimized for use in the bowling center. Includes camera integration to snap photos of your gear.
 
-## Learn More
+## 🛠️ Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+*   **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
+*   **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
+*   **State Management**: React Context + LocalStorage (Privacy-first, no login required)
+*   **Analytics**: Google Analytics 4 (GA4)
+*   **Icons**: [Lucide React](https://lucide.dev/)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🚀 Getting Started
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Prerequisites
 
-## Deploy on Vercel
+*   Node.js 18+
+*   npm
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Installation
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/Foreveryoungx/pinpoint-app.git
+    cd pinpoint-app
+    ```
+
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
+
+3.  Run the development server:
+    ```bash
+    npm run dev
+    ```
+
+4.  Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## 📈 Deployment
+
+This project is optimized for deployment on **Vercel**.
+
+1.  Push your code to a git repository.
+2.  Import the project into Vercel.
+3.  **Environment Variables**:
+    *   `NEXT_PUBLIC_GA_ID`: Your Google Analytics Measurement ID (Required for analytics).
+
+## 🔒 Data Privacy
+
+PinPoint uses **LocalStorage** to persist your arsenal and logs.
+*   **No Cloud Sync**: Your data lives on your device.
+*   **No Login**: Start using it immediately.
+*   **Image Compression**: Images are compressed locally before storage to ensure fast performance.
+
+---
+
+built with ❤️ for bowlers.
