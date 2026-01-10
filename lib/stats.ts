@@ -25,8 +25,10 @@ export function calculateBallStats(arsenal: Ball[], logs: GameLog[]): BallStats[
         if (current) {
             current.totalPins += log.score;
             current.games += (log.gamesCount || 1);
-            if (log.score > current.high) {
-                current.high = log.score;
+            const gameScore = Math.round(log.score / (log.gamesCount || 1));
+
+            if (gameScore > current.high) {
+                current.high = gameScore;
             }
         }
     });
