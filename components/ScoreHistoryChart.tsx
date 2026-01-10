@@ -8,19 +8,24 @@ export function ScoreHistoryChart() {
     const { logs } = useApp();
 
     // Get last 20 games reversd (logs are usually newest first)
+    // And calculate average score for bulk logs
     const recentGames = [...logs]
         .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-        .slice(-20);
+        .slice(-20)
+        .map(log => ({
+            ...log,
+            displayScore: Math.round(log.score / (log.gamesCount || 1))
+        }));
 
     if (recentGames.length < 2) {
         return null; // Need at least 2 games to show a line
     }
 
-    const average = Math.round(recentGames.reduce((acc, curr) => acc + curr.score, 0) / recentGames.length);
+    const average = Math.round(recentGames.reduce((acc, curr) => acc + curr.displayScore, 0) / recentGames.length);
 
     // Calculate dynamic Y-axis domain
-    const minScore = Math.min(...recentGames.map(g => g.score));
-    const maxScore = Math.max(...recentGames.map(g => g.score));
+    const minScore = Math.min(...recentGames.map(g => g.displayScore));
+    const maxScore = Math.max(...recentGames.map(g => g.displayScore));
     const domainMin = Math.max(0, minScore - 20);
     const domainMax = Math.min(300, maxScore + 20);
 
@@ -62,7 +67,7 @@ export function ScoreHistoryChart() {
                         <ReferenceLine y={average} stroke="#666" strokeDasharray="3 3" label={{ position: 'right', value: 'Avg', fill: '#666', fontSize: 10 }} />
                         <Area
                             type="monotone"
-                            dataKey="score"
+                            dataKey="displayScore"
                             stroke="#00FF9D"
                             strokeWidth={2}
                             fillOpacity={1}
