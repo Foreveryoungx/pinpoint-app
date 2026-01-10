@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
-import { NotebookPen, LayoutGrid, Plus, Gift } from "lucide-react";
+import { NotebookPen, LayoutGrid, Plus, Gift, CircleHelp } from "lucide-react";
 import { BallPerformanceList } from "@/components/BallPerformanceList";
 import { DashboardAlerts } from "@/components/DashboardAlerts";
 import { ScoreHistoryChart } from "@/components/ScoreHistoryChart";
@@ -20,11 +20,18 @@ export default function Home() {
           <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">PinPoint</h1>
           <p className="text-xs text-primary tracking-widest font-mono">DASHBOARD</p>
         </div>
-        <Link href="/updates">
-          <Button variant="ghost" size="icon" className="rounded-full bg-white/5 hover:bg-white/10 border border-white/5">
-            <Gift className="h-5 w-5 text-gray-300" />
-          </Button>
-        </Link>
+        <div className="flex gap-2">
+          <Link href="/guide">
+            <Button variant="ghost" size="icon" className="rounded-full bg-white/5 hover:bg-white/10 border border-white/5">
+              <CircleHelp className="h-5 w-5 text-gray-300" />
+            </Button>
+          </Link>
+          <Link href="/updates">
+            <Button variant="ghost" size="icon" className="rounded-full bg-white/5 hover:bg-white/10 border border-white/5">
+              <Gift className="h-5 w-5 text-gray-300" />
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Alerts */}

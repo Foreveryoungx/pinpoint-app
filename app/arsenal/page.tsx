@@ -63,8 +63,8 @@ export default function ArsenalPage() {
                 )}
 
                 {arsenal.map((ball) => {
-                    const needsSurface = ball.gamesSinceSurface >= 30;
-                    const needsDetox = ball.gamesSinceDetox >= 60;
+                    const needsSurface = ball.gamesSinceSurface >= 9;
+                    const needsDetox = ball.gamesSinceDetox >= 50;
 
                     return (
                         <div key={ball.id} className="p-4 rounded-xl bg-secondary border border-white/5 hover:border-primary/20 transition-all group relative overflow-hidden">
@@ -103,49 +103,73 @@ export default function ArsenalPage() {
                                 </div>
                             </div>
 
-                            <div className="mt-4 grid grid-cols-2 gap-3 text-xs">
-                                <div className={cn("p-3 rounded-lg flex flex-col gap-2 transition-colors", needsSurface ? "bg-alert-surface/10 border border-alert-surface/20" : "bg-black/20")}>
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-gray-400">Surface</span>
-                                        <span className={needsSurface ? "text-alert-surface font-bold" : "text-gray-300"}>
-                                            {ball.gamesSinceSurface}/30
-                                        </span>
-                                    </div>
-                                    {needsSurface && (
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            className="w-full h-7 text-[10px] bg-alert-surface/20 text-alert-surface hover:bg-alert-surface/30"
-                                            onClick={() => resetMaintenance(ball.id, 'surface')}
-                                        >
-                                            <RefreshCcw className="mr-1 h-3 w-3" /> Reset
-                                        </Button>
-                                    )}
-                                </div>
-
-                                <div className={cn("p-3 rounded-lg flex flex-col gap-2 transition-colors", needsDetox ? "bg-alert-detox/10 border border-alert-detox/20" : "bg-black/20")}>
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-gray-400">Detox</span>
-                                        <span className={needsDetox ? "text-alert-detox font-bold" : "text-gray-300"}>
-                                            {ball.gamesSinceDetox}/60
-                                        </span>
-                                    </div>
-                                    {needsDetox && (
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            className="w-full h-7 text-[10px] bg-alert-detox/20 text-alert-detox hover:bg-alert-detox/30"
-                                            onClick={() => resetMaintenance(ball.id, 'detox')}
-                                        >
-                                            <RefreshCcw className="mr-1 h-3 w-3" /> Reset
-                                        </Button>
-                                    )}
-                                </div>
+                            <div className="mt-4 grid grid-cols-2 gap-3">
+                                <MaintenanceBar
+                                    current={ball.gamesSinceSurface}
+                                    max={9}
+                                    label="Surface"
+                                    type="surface"
+                                    onReset={() => resetMaintenance(ball.id, 'surface')}
+                                />
+                                <MaintenanceBar
+                                    current={ball.gamesSinceDetox}
+                                    max={50}
+                                    label="Detox"
+                                    type="detox"
+                                    onReset={() => resetMaintenance(ball.id, 'detox')}
+                                />
                             </div>
                         </div>
                     )
                 })}
             </div>
         </main>
+    );
+}
+
+function MaintenanceBar({ current, max, label, type, onReset }: { current: number, max: number, label: string, type: 'surface' | 'detox', onReset: (id: string, type: 'surface' | 'detox') => void }) {
+    const percentage = Math.min(100, Math.round((current / max) * 100));
+    const isOverdue = current >= max;
+    const isWarning = !isOverdue && percentage >= 80;
+
+    let colorClass = "bg-primary";
+    let bgClass = "bg-primary/20";
+
+    if (isOverdue) {
+        colorClass = type === 'surface' ? "bg-alert-surface" : "bg-alert-detox";
+        bgClass = type === 'surface' ? "bg-alert-surface/20" : "bg-alert-detox/20";
+    } else if (isWarning) {
+        colorClass = "bg-yellow-400";
+        bgClass = "bg-yellow-400/20";
+    }
+
+    return (
+        <div className={cn("p-3 rounded-lg flex flex-col gap-2 transition-colors", isOverdue ? `${bgClass.replace('/20', '/10')} border ${colorClass.replace('bg-', 'border-')}/20` : "bg-black/20")}>
+            <div className="flex justify-between items-center mb-1">
+                <span className={cn("text-xs font-medium uppercase tracking-wider", isOverdue ? "text-white" : "text-gray-400")}>{label}</span>
+                <span className={cn("text-xs font-bold", isOverdue ? colorClass.replace('bg-', 'text-') : "text-gray-300")}>
+                    {percentage}%
+                </span>
+            </div>
+
+            <div className="h-1.5 w-full bg-black/40 rounded-full overflow-hidden">
+                <div
+                    className={cn("h-full rounded-full transition-all duration-500", colorClass)}
+                    style={{ width: `${percentage}%` }}
+                />
+            </div>
+
+            <div className="flex justify-between items-center mt-1">
+                <span className="text-[10px] text-gray-500 font-mono">{current} / {max} gms</span>
+                {isOverdue && (
+                    <button
+                        onClick={() => onReset}
+                        className={cn("text-[10px] font-bold uppercase hover:underline", colorClass.replace('bg-', 'text-'))}
+                    >
+                        Reset
+                    </button>
+                )}
+            </div>
+        </div>
     );
 }

@@ -9,10 +9,10 @@ export function DashboardAlerts() {
 
     const alerts = arsenal.flatMap(ball => {
         const list = [];
-        if (ball.gamesSinceSurface >= 30) {
+        if (ball.gamesSinceSurface >= 9) {
             list.push({ type: 'surface', ball });
         }
-        if (ball.gamesSinceDetox >= 60) {
+        if (ball.gamesSinceDetox >= 50) {
             list.push({ type: 'detox', ball });
         }
         return list;
