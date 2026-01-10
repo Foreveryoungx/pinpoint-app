@@ -127,7 +127,7 @@ export default function ArsenalPage() {
     );
 }
 
-function MaintenanceBar({ current, max, label, type, onReset }: { current: number, max: number, label: string, type: 'surface' | 'detox', onReset: (id: string, type: 'surface' | 'detox') => void }) {
+function MaintenanceBar({ current, max, label, type, onReset }: { current: number, max: number, label: string, type: 'surface' | 'detox', onReset: () => void }) {
     const percentage = Math.min(100, Math.round((current / max) * 100));
     const isOverdue = current >= max;
     const isWarning = !isOverdue && percentage >= 80;
@@ -163,7 +163,7 @@ function MaintenanceBar({ current, max, label, type, onReset }: { current: numbe
                 <span className="text-[10px] text-gray-500 font-mono">{current} / {max} gms</span>
                 {isOverdue && (
                     <button
-                        onClick={() => onReset}
+                        onClick={onReset}
                         className={cn("text-[10px] font-bold uppercase hover:underline", colorClass.replace('bg-', 'text-'))}
                     >
                         Reset

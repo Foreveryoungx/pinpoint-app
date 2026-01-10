@@ -2,18 +2,35 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
-import { NotebookPen, LayoutGrid, Plus, Gift, CircleHelp } from "lucide-react";
+import { NotebookPen, LayoutGrid, Plus, Gift, CircleHelp, Bell } from "lucide-react";
 import { BallPerformanceList } from "@/components/BallPerformanceList";
 import { DashboardAlerts } from "@/components/DashboardAlerts";
 import { ScoreHistoryChart } from "@/components/ScoreHistoryChart";
 import { useApp } from "@/components/AppProvider";
+import { useState, useEffect } from "react";
+import { requestNotificationPermission, sendNotification } from "@/lib/notifications";
 
 export default function Home() {
-  const { arsenal } = useApp();
+  const { arsenal, logs } = useApp();
   const hasBalls = arsenal.length > 0;
+  const [showNotificationBtn, setShowNotificationBtn] = useState(false);
+
+  useEffect(() => {
+    if ("Notification" in window && Notification.permission === "default") {
+      setShowNotificationBtn(true);
+    }
+  }, []);
+
+  const handleEnableNotifications = async () => {
+    const granted = await requestNotificationPermission();
+    if (granted) {
+      setShowNotificationBtn(false);
+      sendNotification("PinPoint Alerts Enabled", "You'll now be notified when your equipment needs attention!");
+    }
+  };
 
   return (
-    <main className="min-h-screen p-4 pb-20 md:p-8 max-w-xl mx-auto space-y-8">
+    <main className="min-h-screen p-4 pb-20 md:p-8 max-w-xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
@@ -21,6 +38,11 @@ export default function Home() {
           <p className="text-xs text-primary tracking-widest font-mono">DASHBOARD</p>
         </div>
         <div className="flex gap-2">
+          {showNotificationBtn && (
+            <Button variant="ghost" size="icon" onClick={handleEnableNotifications} className="rounded-full bg-primary/10 hover:bg-primary/20 border border-primary/20 animate-pulse">
+              <Bell className="h-5 w-5 text-primary" />
+            </Button>
+          )}
           <Link href="/guide">
             <Button variant="ghost" size="icon" className="rounded-full bg-white/5 hover:bg-white/10 border border-white/5">
               <CircleHelp className="h-5 w-5 text-gray-300" />

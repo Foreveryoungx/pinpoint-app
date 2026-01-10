@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { AppState, Ball, GameLog } from '@/lib/types';
+import { sendNotification } from '@/lib/notifications';
 
 interface AppContextType extends AppState {
     addBall: (ball: Omit<Ball, 'id' | 'gamesTotal' | 'gamesSinceSurface' | 'gamesSinceDetox'>) => void;
@@ -81,11 +82,22 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
             // Update ball mileage
             const updatedArsenal = prev.arsenal.map(b => {
                 if (b.id === logData.ballId) {
+                    const newSurface = b.gamesSinceSurface + gamesCount;
+                    const newDetox = b.gamesSinceDetox + gamesCount;
+
+                    // Trigger Notification checks
+                    if (newSurface === 9 || (newSurface > 9 && b.gamesSinceSurface < 9)) {
+                        sendNotification(`Maintenance Alert: ${b.name}`, "Surface maintenance is recommended (9 games).");
+                    }
+                    if (newDetox === 50 || (newDetox > 50 && b.gamesSinceDetox < 50)) {
+                        sendNotification(`Maintenance Alert: ${b.name}`, "Detox/Oil extraction is recommended (50 games).");
+                    }
+
                     return {
                         ...b,
                         gamesTotal: b.gamesTotal + gamesCount,
-                        gamesSinceSurface: b.gamesSinceSurface + gamesCount,
-                        gamesSinceDetox: b.gamesSinceDetox + gamesCount
+                        gamesSinceSurface: newSurface,
+                        gamesSinceDetox: newDetox
                     };
                 }
                 return b;
